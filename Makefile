@@ -24,6 +24,7 @@ LDLIBS		+= $(READLINE:1=-lreadline) # Add -lncurses if needed for readline, migh
 # Run "make EDITLINE=1" to include the optional editline editing and history support (smaller than readline):
 CFLAGS		+= $(EDITLINE:1=-DEDITLINE)
 LDLIBS		+= $(EDITLINE:1=-leditline)
+RAYLIB_FLAGS     = -L./external/lib -lraylib -I./external
 
 # Uncomment the following line to force generation of x86-64-bit code:
 #CFLAGS		+= -m64
@@ -88,10 +89,16 @@ static: LDFLAGS += -static
 
 # Create the mathomatic executable:
 $(AOUT): main.c $(LIB)
-	$(CC) $(CFLAGS) $(LDFLAGS) $+ $(LDLIBS) -o $(AOUT)
+	$(CC) $(CFLAGS) $(LDFLAGS) $+ $(RAYLIB_FLAGS) $(LDLIBS) -o $(AOUT)
 	@echo
 	@echo ./$(AOUT) successfully created.
 	@echo
+
+raylib: 
+	pushd ./external/raylib
+	make remake_release_path
+	make -j10
+	popd
 
 
 clean:
